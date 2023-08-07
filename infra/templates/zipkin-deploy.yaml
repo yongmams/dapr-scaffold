@@ -1,0 +1,43 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: dapr-zipkin
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    service: dapr-zipkin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: dapr-zipkin
+  template:
+    metadata:
+      labels:
+        service: dapr-zipkin
+    spec:
+      containers:
+        - name: dapr-zipkin
+          image: openzipkin/zipkin:2.24
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          ports:
+            - name: http
+              containerPort: 9411
+              protocol: TCP
+          env:
+            - name: STORAGE_TYPE
+              value: elasticsearch
+            - name: ES_HOSTS
+              value: {{ print "http://dapr-logs-es-http." .Release.Namespace ".svc:9200" }}
+            - name: ES_USERNAME
+              value: elastic
+            - name: ES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: elastic
+                  name: dapr-logs-es-elastic-user
+            - name: ES_HTTP_LOGGING
+              value: HEADERS

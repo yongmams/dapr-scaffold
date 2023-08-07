@@ -1,0 +1,36 @@
+# Default values for dapr-scaffold.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+global:
+  storageClass: "dapr-standard-sc"
+
+elasticsearch:
+  installOperator: true
+  persistentVolume:
+    storageSize: 8Gi
+    storageClass: ""
+
+redisinsight:
+  persistentVolume:
+    storageSize: 8Gi
+    storageClass: ""
+
+# dependencies:
+eck-operator:
+  installCRDs: false
+
+prometheus:
+  alertmanager:
+    persistentVolume:
+      storageClass: "dapr-standard-sc"
+
+  nodeExporter:
+    enabled: false
+
+  server:
+    persistentVolume:
+      storageClass: "dapr-standard-sc"
+
+  pushgateway:
+    persistentVolume:
+      storageClass: "dapr-standard-sc"

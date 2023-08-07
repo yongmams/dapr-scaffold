@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: dapr-zipkin-clusterip
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    service: dapr-zipkin
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9411
+      targetPort: 9411
+      protocol: TCP
+      name: dapr-zipkin
+  selector:
+    service: dapr-zipkin

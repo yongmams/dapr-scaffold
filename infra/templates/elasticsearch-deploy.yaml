@@ -1,0 +1,26 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: dapr-logs
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  version: 7.17.10
+  nodeSets:
+    - name: default
+      count: 1
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: {{ .Values.elasticsearch.storageSize | default "8Gi" }}
+            storageClassName: {{ include "dapr.storage.class" (dict "persistentVolume" .Values.elasticsearch.persistentVolume "global" .Values.global) }}
+      config:
+        node.store.allow_mmap: false
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true

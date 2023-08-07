@@ -1,0 +1,13 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: dapr-redisinsight-pvc
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  storageClassName: {{ include "dapr.storage.class" (dict "persistentVolume" .Values.redisinsight.persistentVolume "global" .Values.global) }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.redisinsight.storageSize | default "8Gi" }}
