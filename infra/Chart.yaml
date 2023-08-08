@@ -52,6 +52,10 @@ dependencies:
     version: "15.8.0"
     repository: "https://prometheus-community.github.io/helm-charts"
 
+  - name: apisix
+    version: "2.0.7"
+    repository: "https://charts.bitnami.com/bitnami"
+
 maintainers:
   - name: Yong Ma
     email: mayong43111@hotmail.com

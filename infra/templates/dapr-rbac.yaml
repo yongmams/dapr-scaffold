@@ -1,4 +1,4 @@
----
+{{- if ne .Release.Namespace "default" }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -21,3 +21,4 @@ roleRef:
   kind: Role
   name: secret-reader
   apiGroup: rbac.authorization.k8s.io
+{{- end }}
