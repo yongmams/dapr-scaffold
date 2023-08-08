@@ -15,6 +15,13 @@ redisinsight:
     storageSize: 8Gi
     storageClass: ""
 
+mssql:
+  enabled: true
+  password: ""
+  persistentVolume:
+    storageSize: 8Gi
+    storageClass: ""
+
 # dependencies:
 eck-operator:
   installCRDs: false

@@ -24,6 +24,13 @@ version: 0.1.0
 appVersion: "1.16.0"
 
 dependencies:
+
+  - name: common
+    repository: oci://registry-1.docker.io/bitnamicharts
+    tags:
+      - bitnami-common
+    version: 2.x.x
+
   - name: dapr
     version: "1.11.2"
     repository: "https://dapr.github.io/helm-charts"

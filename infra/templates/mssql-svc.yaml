@@ -1,0 +1,16 @@
+{{- if .Values.mssql.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: dapr-mssql-0-clusterip
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  # type: LoadBalancer
+  selector:
+    statefulset.kubernetes.io/pod-name: dapr-mssql-0
+  ports:
+    - protocol: TCP
+      port: 1433
+      targetPort: 1433
+      name: tcpsql
+{{- end }}
