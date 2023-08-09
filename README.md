@@ -8,13 +8,13 @@ helm install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-syste
 ```
 or
 ```
-helm install csi-driver-smb .\mirror\csi-driver-smb-v1.11.0.tgz --namespace kube-system --create-namespace
+helm install csi-driver-smb .\preparation\csi\csi-driver-smb-v1.11.0.tgz --namespace kube-system --create-namespace
 ```
 
 Create SMB Storage Class (dapr-standard-sc)
 ```
 kubectl create secret generic smbcreds --from-literal=username="k8suser" --from-literal=password="********" -n kube-system
-kubectl apply -f .\csi\dapr-standard.sc.yaml
+kubectl apply -f .\preparation\dapr-standard.sc.yaml
 ```
 ## Install
 ```

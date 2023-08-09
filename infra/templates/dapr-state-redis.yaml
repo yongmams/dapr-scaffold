@@ -8,7 +8,7 @@ spec:
   version: v1
   metadata:
     - name: redisHost
-      value: {{ print "http://dapr-redis-master." .Release.Namespace ".svc:6379" }}
+      value: {{ print "dapr-redis-master." .Release.Namespace ".svc:6379" }}
     - name: redisPassword
       secretKeyRef:
         name: dapr-redis

@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcs-frontend-samples
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mcs-frontend-samples
+  template:
+    metadata:
+      labels:
+        app: mcs-frontend-samples
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "mcs-frontend-samples"
+        dapr.io/app-port: "80"
+        dapr.io/config: "darp-app-config"
+    spec:
+      containers:
+        - name: mcs-frontend-samples
+          image: hub.sample.com/mcs-frontend-sample
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
