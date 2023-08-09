@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dapr-zipkin-dependencies
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          containers:
+            - name: zipkin-dependencies
+              image: openzipkin/zipkin-dependencies:2.6
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: STORAGE_TYPE
+                  value: elasticsearch
+                - name: ES_HOSTS
+                  value: {{ print "http://dapr-logs-es-http." .Release.Namespace ".svc:9200" }}
+                - name: ES_INDEX
+                  value: zipkin
+                - name: ES_INDEX_REPLICAS
+                  value: "1"
+                - name: ES_INDEX_SHARDS
+                  value: "3"
+                - name: ES_USERNAME
+                  value: elastic
+                - name: ES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: elastic
+                      name: dapr-logs-es-elastic-user
+              resources:
+                limits:
+                  memory: "256Mi"
+                  cpu: "200m"
+          restartPolicy: OnFailure
+          concurrencyPolicy: Forbid
