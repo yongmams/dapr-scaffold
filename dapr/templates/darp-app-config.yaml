@@ -1,0 +1,12 @@
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: darp-app-config
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  tracing:
+    samplingRate: "1"
+    zipkin:
+      endpointAddress: {{print "http://dapr-zipkin-clusterip" .Release.Namespace ".svc:9411/api/v2/spans" }}
+  metric:
+    enabled: true

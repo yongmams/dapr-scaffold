@@ -1,0 +1,15 @@
+dependencies:
+- name: common
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 2.8.0
+- name: redis
+  repository: https://charts.bitnami.com/bitnami
+  version: 17.14.6
+- name: prometheus
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 15.8.0
+- name: apisix
+  repository: https://charts.bitnami.com/bitnami
+  version: 2.0.7
+digest: sha256:8793d5d2ac36c6ba4a8c2384a08567adcc2c4696d30fd3f89af0d5abffbea25e
+generated: "2023-08-10T11:55:01.9414307+08:00"
