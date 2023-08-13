@@ -2,6 +2,17 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
+
+/** 获取当前的配置 GET /configuration.json */
+export async function currentConfiguration(options?: { [key: string]: any }) {
+  return request<{
+    data: API.CurrentConfiguration;
+  }>('/configuration.json', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
   return request<{

@@ -7,21 +7,42 @@ import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
+import { currentUser as queryCurrentUser, currentConfiguration as queryCurrentConfiguration } from './services/ant-design-pro/api';
 import React from 'react';
 import { AvatarDropdown, AvatarName } from './components/RightContent/AvatarDropdown';
 const isDev = process.env.NODE_ENV === 'development';
-const loginPath = '/user/login';
+const defaultLoginPath = '/user/login';
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
 export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
+  configuration?: API.CurrentConfiguration;
   currentUser?: API.CurrentUser;
   loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
+  const fetchConfiguration = async () => {
+    try {
+      const msg = await queryCurrentConfiguration({
+        skipErrorHandler: true,
+      });
+      return msg.data;
+    } catch (error) {
+      console.error(error);
+    }
+    return undefined;
+  };
+
+  var configuration = await fetchConfiguration();
+  if (!configuration) {
+    return {
+      configuration: { loginPath: defaultLoginPath },
+      settings: defaultSettings as Partial<LayoutSettings>,
+    };
+  }
+
   const fetchUserInfo = async () => {
     try {
       const msg = await queryCurrentUser({
@@ -29,21 +50,24 @@ export async function getInitialState(): Promise<{
       });
       return msg.data;
     } catch (error) {
-      history.push(loginPath);
+      history.push(configuration!.loginPath);
     }
     return undefined;
   };
+
   // 如果不是登录页面，执行
   const { location } = history;
-  if (location.pathname !== loginPath) {
+  if (location.pathname !== configuration.loginPath) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
       currentUser,
+      configuration,
       settings: defaultSettings as Partial<LayoutSettings>,
     };
   }
   return {
+    configuration,
     fetchUserInfo,
     settings: defaultSettings as Partial<LayoutSettings>,
   };
@@ -67,8 +91,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.push(loginPath);
+      if (!initialState?.currentUser && location.pathname !== initialState?.configuration!.loginPath) {
+        history.push(initialState?.configuration!.loginPath!);
       }
     },
     layoutBgImgList: [
@@ -93,11 +117,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     ],
     links: isDev
       ? [
-          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-            <LinkOutlined />
-            <span>OpenAPI 文档</span>
-          </Link>,
-        ]
+        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+          <LinkOutlined />
+          <span>OpenAPI 文档</span>
+        </Link>,
+      ]
       : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面

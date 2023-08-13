@@ -2,6 +2,11 @@
 /* eslint-disable */
 
 declare namespace API {
+
+  type CurrentConfiguration = {
+    loginPath: string;
+  };
+
   type CurrentUser = {
     name?: string;
     avatar?: string;

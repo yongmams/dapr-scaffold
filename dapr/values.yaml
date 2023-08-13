@@ -56,6 +56,6 @@ apisix:
       type: ClusterIP
  
 
-sample:
+admin:
   enabled: true
       
