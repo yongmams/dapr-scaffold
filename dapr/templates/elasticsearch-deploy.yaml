@@ -4,7 +4,7 @@ metadata:
   name: dapr-logs
   namespace: {{ .Release.Namespace | quote }}
 spec:
-  version: 7.17.10
+  version: 7.16.2
   nodeSets:
     - name: default
       count: 1
@@ -20,6 +20,8 @@ spec:
             storageClassName: {{ include "dapr.storage.class" (dict "persistentVolume" .Values.elasticsearch.persistentVolume "global" .Values.global) }}
       config:
         node.store.allow_mmap: false
+  config:
+    ingest.geoip.downloader.enabled: false
   http:
     tls:
       selfSignedCertificate:

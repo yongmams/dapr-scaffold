@@ -4,7 +4,7 @@ metadata:
   name: dapr-logs-kibana
   namespace: {{ .Release.Namespace | quote }}
 spec:
-  version: 7.17.10
+  version: 7.16.2
   count: 1
   elasticsearchRef:
     name: dapr-logs
@@ -14,7 +14,21 @@ spec:
       {{list (print "http://dapr-logs-es-http." .Release.Namespace ".svc:9200")}}
     xpack.fleet.agents.fleet_server.hosts:
       {{list (print "http://dapr-logs-es-http." .Release.Namespace ".svc:8220")}}
+    server:
+      basePath: "/kb"
+      rewriteBasePath: true
   http:
     tls:
       selfSignedCertificate:
         disabled: true
+  podTemplate:
+    spec:
+      containers:
+        - name: kibana
+          readinessProbe:
+            # Override the readiness probe as GCLB reuses it for its own healthchecks
+            # The path must contain the path prefix used to serve the application from the load balancer
+            httpGet:
+              scheme: HTTP
+              path: "/kb/login"
+              port: 5601
