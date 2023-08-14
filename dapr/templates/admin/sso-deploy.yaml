@@ -21,7 +21,10 @@ spec:
     spec:
       containers:
         - name: dapr-app-admin
-          image: hub.sample.com/dapr-app-sso:0.0.1
+          image: hub.sample.com/dapr-app-sso:0.0.2
+          env:
+          - name: ASPNETCORE_PATHBASE
+            value: "/SSO"
           resources:
             limits:
               memory: "256Mi"
