@@ -15,6 +15,12 @@ redisinsight:
     storageSize: 8Gi
     storageClass: ""
 
+sqlpad:
+  password: ""
+  persistentVolume:
+    storageSize: 8Gi
+    storageClass: ""    
+
 mssql:
   enabled: true
   password: ""
@@ -22,6 +28,8 @@ mssql:
     storageSize: 8Gi
     storageClass: ""
 
+admin:
+  enabled: true
 # dependencies:
 prometheus:
   alertmanager:
@@ -55,7 +63,4 @@ apisix:
     service:
       type: ClusterIP
  
-
-admin:
-  enabled: true
       

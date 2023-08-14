@@ -1,0 +1,49 @@
+{{- if .Values.mssql.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dapr-sqlpad
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app: dapr-sqlpad
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dapr-sqlpad
+  template:
+    metadata:
+      labels:
+        app: dapr-sqlpad
+    spec:
+      containers:
+        - name: dapr-sqlpad
+          image: sqlpad/sqlpad:7.1.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SQLPAD_BASE_URL
+              value: "/sqlpad"
+            - name: SQLPAD_TRUST_PROXY 
+              value: "true"
+            - name: SQLPAD_ADMIN
+              value: "sa"
+            - name: SQLPAD_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dapr-sqlpad-secret
+                  key: SQLPAD_ADMIN_PASSWORD
+          volumeMounts:
+            - name: db
+              mountPath: /var/lib/sqlpad
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+      volumes:
+        - name: db
+          persistentVolumeClaim:
+            claimName: dapr-sqlpad-pvc
+{{- end }}

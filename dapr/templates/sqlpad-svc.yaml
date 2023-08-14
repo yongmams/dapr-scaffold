@@ -1,0 +1,17 @@
+{{- if .Values.mssql.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: dapr-sqlpad-clusterip
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app: dapr-sqlpad
+spec:
+  selector:
+    app: dapr-sqlpad
+  ports:
+    - name: web
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+{{- end }}

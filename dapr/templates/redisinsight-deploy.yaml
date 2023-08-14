@@ -18,8 +18,13 @@ spec:
     spec:
       containers:
         - name: dapr-redisinsight
-          image: redislabs/redisinsight:1.9.0
+          image: redislabs/redisinsight:1.14.0
           imagePullPolicy: IfNotPresent
+          env:
+            - name: RIPROXYENABLE
+              value: "t"
+            - name: RIPROXYPATH
+              value: "/redis/"
           securityContext:
             runAsUser: 0
           volumeMounts:

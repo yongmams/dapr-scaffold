@@ -1,0 +1,14 @@
+{{- if .Values.mssql.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: dapr-sqlpad-pvc
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  storageClassName: {{ include "dapr.storage.class" (dict "persistentVolume" .Values.sqlpad.persistentVolume "global" .Values.global) }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.sqlpad.storageSize | default "8Gi" }}
+{{- end }}
