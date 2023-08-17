@@ -196,3 +196,6 @@ Config_SSP/
 
 #Document
 [Dd]ocument/
+
+#tempkey
+tempkey.jwk

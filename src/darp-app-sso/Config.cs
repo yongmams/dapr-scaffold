@@ -42,10 +42,10 @@ namespace DaprApp.SSO
                     AllowedGrantTypes = GrantTypes.Code,
                     
                     // where to redirect to after login
-                    RedirectUris = { "https://localhost:5002/signin-oidc" },
+                    RedirectUris = { "http://127.0.0.1:5173/login.html","http://127.0.0.1/login.html","http://localhost/login.html" },
 
                     // where to redirect to after logout
-                    PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
+                    PostLogoutRedirectUris = { "http://127.0.0.1:5173/signout-callback-oidc","http://127.0.0.1/signout-callback-oidc","http://localhost/signout-callback-oidc" },
 
                     AllowedScopes = new List<string>
                     {

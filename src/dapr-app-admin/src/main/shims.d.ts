@@ -1,0 +1,1 @@
+declare module '@/vendor/react-custom-scrollbars.min.js'

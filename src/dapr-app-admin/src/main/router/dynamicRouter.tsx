@@ -1,0 +1,39 @@
+import { Navigate, useRoutes } from 'react-router-dom'
+import { CustomRoute } from './routes';
+
+interface routerProps {
+  routes: CustomRoute[];
+}
+
+function generateRouter(routers: CustomRoute[]) {
+  return routers.map((item) => {
+    const obj = { ...item }
+    const { children, redirect, component: Component } = item
+    if (children && children.length) {
+      obj.children = generateRouter(children)
+    }
+    /**
+     * redirect 目前尝试出的几个解决方案
+     * 1、遍历所有路由，提取出所有包含 redirect 字段的路由，然后统一用 Navigate  （目前采用，）
+     * 2、新增 index : true, 取消path， 使用官方默认路由的方式
+     * 3、需要重定向的页面 path 参数设置为 空值
+     * 后期在做分析 或者有没有其他方案
+     * */
+    let element
+    if (Component) {
+      // element = typeof Component === 'function' ? <Component /> : Component
+      element = <Component />
+    } else if (redirect) {
+      element = <Navigate to={item.redirect!} replace />
+    }
+    obj.element = element
+    return obj
+  })
+}
+
+const DynamicRouter = (props: routerProps) => {
+  const list = generateRouter(props.routes)
+  return useRoutes(list)
+}
+
+export default DynamicRouter

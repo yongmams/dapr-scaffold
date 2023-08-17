@@ -1,6 +1,5 @@
 using DaprApp.SSO;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,14 +13,13 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddControllersWithViews();
 
-builder.Services
-    .AddIdentityServer(options =>
-    {
-    })
+var id4buiild = builder.Services
+    .AddIdentityServer()
     .AddInMemoryIdentityResources(Config.IdentityResources)
     .AddInMemoryApiScopes(Config.ApiScopes)
     .AddInMemoryClients(Config.Clients)
-    .AddTestUsers(TestUsers.Users);
+    .AddTestUsers(TestUsers.Users)
+    .AddDeveloperSigningCredential();
 
 builder.Services.AddDataProtection()
     .SetApplicationName("DaprApp.SSO")
@@ -33,6 +31,19 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.Cookie.Name = ".DaprApp.SSO.Cookie";
     });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AnyOrigin",
+        policy =>
+        {
+            policy
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials()
+                .SetIsOriginAllowed(url => url.StartsWith("http://127.0.0.1"));
+        });
+});
 
 var app = builder.Build();
 
@@ -51,13 +62,15 @@ else
 {
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    // app.UseHsts();
 }
 
 // app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseCors("AnyOrigin");
 
 app.UseIdentityServer();
 
