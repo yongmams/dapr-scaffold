@@ -43,6 +43,10 @@ dependencies:
     version: "2.0.7"
     repository: "https://charts.bitnami.com/bitnami"
 
+  - name: minio
+    version: "11.6.8"
+    repository: "https://charts.bitnami.com/bitnami"
+
 maintainers:
   - name: Yong Ma
     email: mayong43111@hotmail.com

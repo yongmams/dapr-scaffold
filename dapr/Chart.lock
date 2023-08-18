@@ -11,5 +11,8 @@ dependencies:
 - name: apisix
   repository: https://charts.bitnami.com/bitnami
   version: 2.0.7
-digest: sha256:8793d5d2ac36c6ba4a8c2384a08567adcc2c4696d30fd3f89af0d5abffbea25e
-generated: "2023-08-10T11:55:01.9414307+08:00"
+- name: minio
+  repository: https://charts.bitnami.com/bitnami
+  version: 11.6.8
+digest: sha256:707cc6b8bed5227292738313c55e2f3ac47c9389d3c571fe866c5661f3b5067c
+generated: "2023-08-18T19:19:02.5588456+08:00"

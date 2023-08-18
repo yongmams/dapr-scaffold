@@ -63,4 +63,12 @@ apisix:
     service:
       type: ClusterIP
  
-      
+minio:
+  replicas: 4      
+  persistence:
+    storageClass: "dapr-standard-sc"
+    size: 16Gi
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
