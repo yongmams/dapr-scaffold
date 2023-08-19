@@ -37,11 +37,18 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "AnyOrigin",
         policy =>
         {
+            var corsUrls = builder.Configuration.GetSection("CorsUrls").Get<string[]>();
+
+            if (corsUrls != null && corsUrls.Count() > 0)
+            {
+                policy.WithOrigins(corsUrls.ToArray());
+            }
+
             policy
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials()
-                .SetIsOriginAllowed(url => url.StartsWith("http://127.0.0.1"));
+                .SetIsOriginAllowedToAllowWildcardSubdomains();
         });
 });
 

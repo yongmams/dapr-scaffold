@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: dapr-app-admin
-          image: hub.sample.com/dapr-app-sso:0.0.4
+          image: hub.sample.com/dapr-app-sso:0.0.5
           env:
           - name: ASPNETCORE_PATHBASE
             value: "/SSO"
