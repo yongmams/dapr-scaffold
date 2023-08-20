@@ -85,6 +85,12 @@ const asyncRoutesList: CustomRoute[] = [
                 path: '/settings/sqlpad',
                 hidden: true,
                 component: React.lazy(() => import('@/views/sqlpad'))
+            },
+            {
+                title: '文件上传',
+                path: '/settings/webapp/upload',
+                hidden: true,
+                component: React.lazy(() => import('@/views/webapp/upload'))
             }
         ]
     },

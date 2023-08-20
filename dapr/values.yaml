@@ -30,6 +30,10 @@ mssql:
 
 admin:
   enabled: true
+  persistentVolume:
+    storageSize: 8Gi
+    storageClass: ""
+
 # dependencies:
 prometheus:
   alertmanager:

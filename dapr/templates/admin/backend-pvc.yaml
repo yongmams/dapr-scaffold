@@ -1,0 +1,14 @@
+{{- if .Values.admin.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: dapr-admin-pvc
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  storageClassName: {{ include "dapr.storage.class" (dict "persistentVolume" .Values.admin.persistentVolume "global" .Values.global) }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.admin.storageSize | default "8Gi" }}
+{{- end }}

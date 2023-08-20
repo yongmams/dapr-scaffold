@@ -2,31 +2,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dapr-app-sso
+  name: dapr-app-admin-api
   namespace: {{ .Release.Namespace | quote }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dapr-app-sso
+      app: dapr-app-admin-api
   template:
     metadata:
       labels:
-        app: dapr-app-sso
+        app: dapr-app-admin-api
       annotations:
         dapr.io/enabled: "true"
-        dapr.io/app-id: "dapr-app-sso"
+        dapr.io/app-id: "dapr-app-admin-api"
         dapr.io/app-port: "80"
         dapr.io/config: "darp-app-config"
     spec:
       containers:
-        - name: dapr-app-sso
-          image: hub.sample.com/dapr-app-sso:0.0.8
+        - name: dapr-app-admin-api
+          image: hub.sample.com/dapr-app-admin-api:0.0.1
           env:
           - name: ASPNETCORE_PATHBASE
-            value: "/sso"
+            value: "/admin"
+          volumeMounts:
+            - name: db
+              mountPath: /app/appsettings.secret.json
+              subPath: admin-api/appsettings.secret.json
           resources:
             limits:
               memory: "256Mi"
               cpu: "200m"
+      volumes:
+        - name: db
+          persistentVolumeClaim:
+            claimName: dapr-admin-pvc
 {{- end }}

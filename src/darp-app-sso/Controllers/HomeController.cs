@@ -20,9 +20,11 @@ namespace DaprApp.SSO.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Header()
         {
-            return View();
+            var headers = Request.Headers;
+
+            return Json(headers);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

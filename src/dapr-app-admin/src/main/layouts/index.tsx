@@ -26,7 +26,14 @@ const BaseLayout: React.FC = () => {
 
     const handleClick: MenuClickEventHandler = (e: MenuInfo) => {
         console.log('click: ', e.key);
-        navigate(e.key);
+
+        if (!e.key) {
+            return;
+        } else if (e.key.startsWith('http')) {
+            window.open(e.key, '_blank');
+        } else {
+            navigate(e.key);
+        }
     };
 
     return (
@@ -67,6 +74,16 @@ const BaseLayout: React.FC = () => {
                                 key: '/settings/sqlpad',
                                 icon: <UploadOutlined />,
                                 label: 'SQLPad',
+                            },
+                            {
+                                key: 'http://s3.sample.com',
+                                icon: <UploadOutlined />,
+                                label: 'MinIO Dashboard',
+                            },
+                            {
+                                key: '/settings/webapp/upload',
+                                icon: <UploadOutlined />,
+                                label: 'WebApp',
                             }
                         ]
                     }]}

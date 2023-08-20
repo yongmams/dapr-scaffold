@@ -27,7 +27,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      // string shorthand
+      '/admin/api': {
+        target: 'http://localhost:32771/',
+        secure: false,
+        changeOrigin: false
+      },
       '/sso': {
         target: 'http://localhost/',
         secure: false,

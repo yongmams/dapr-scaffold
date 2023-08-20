@@ -1,4 +1,5 @@
 using DaprApp.SSO;
+using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +15,9 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllersWithViews();
 
 var id4buiild = builder.Services
-    .AddIdentityServer()
+    .AddIdentityServer(options =>
+    {
+    })
     .AddInMemoryIdentityResources(Config.IdentityResources)
     .AddInMemoryApiScopes(Config.ApiScopes)
     .AddInMemoryClients(Config.Clients)
@@ -32,6 +35,15 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.Name = ".DaprApp.SSO.Cookie";
     });
 
+bool IsSubdomainOf(Uri subdomain, Uri domain)
+{
+    return subdomain.IsAbsoluteUri
+        && domain.IsAbsoluteUri
+        && subdomain.Scheme == domain.Scheme
+        && subdomain.Port == domain.Port
+        && subdomain.Host.EndsWith($".{domain.Host}", StringComparison.Ordinal);
+}
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "AnyOrigin",
@@ -48,12 +60,35 @@ builder.Services.AddCors(options =>
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials()
-                .SetIsOriginAllowedToAllowWildcardSubdomains();
+                .SetIsOriginAllowed(origin =>
+                {
+                    if (corsUrls != null && corsUrls.Contains(origin))
+                    {
+                        return true;
+                    }
+
+                    if (corsUrls != null && Uri.TryCreate(origin, UriKind.Absolute, out var originUri))
+                    {
+                        if (originUri.Host == "127.0.0.1" || originUri.Host == "localhost")
+                        {
+                            return true;
+                        }
+
+                        return corsUrls
+                            .Where(o => o.Contains($"://*"))
+                            .Select(r => new Uri(r.Replace("*", string.Empty), UriKind.Absolute))
+                            .Any(domain => IsSubdomainOf(originUri, domain));
+                    }
+
+                    return false;
+                });
+            //.SetIsOriginAllowedToAllowWildcardSubdomains();
         });
 });
 
 var app = builder.Build();
 
+app.UseForwardedHeaders();
 var pathBase = Environment.GetEnvironmentVariable("ASPNETCORE_PATHBASE");
 if (!string.IsNullOrEmpty(pathBase))
 {
@@ -78,6 +113,15 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseCors("AnyOrigin");
+
+app.Use(async (ctx, next) =>
+{
+    string host = ctx.Request.Headers["X-Forwarded-Host"].FirstOrDefault() ?? ctx.Request.Host.Value;
+    string scheme = ctx.Request.Headers["X-Forwarded-Proto"].FirstOrDefault() ?? ctx.Request.Scheme;
+
+    ctx.SetIdentityServerOrigin($"{scheme}://{host}");
+    await next();
+});
 
 app.UseIdentityServer();
 

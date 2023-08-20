@@ -1,17 +1,19 @@
 {
   "profiles": {
-    "DaprApp.SSO": {
+    "DapApp.Admin.API": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7273;http://localhost:5147"
+      "applicationUrl": "http://localhost:5261"
     },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -19,25 +21,21 @@
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/SSO",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/admin/swagger",
       "environmentVariables": {
         "ASPNETCORE_URLS": "http://+:80",
-        "ASPNETCORE_PATHBASE": "/SSO"
+        "ASPNETCORE_PATHBASE": "/admin"
       },
-      "publishAllPorts": true,
-      "useSSL": false
-    },
-    "Bridge to Kubernetes": {
-      "commandName": "AzureDevSpacesLocal",
-      "launchBrowser": true
+      "publishAllPorts": true
     }
   },
+  "$schema": "https://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:19920",
-      "sslPort": 44351
+      "applicationUrl": "http://localhost:52472",
+      "sslPort": 0
     }
   }
 }

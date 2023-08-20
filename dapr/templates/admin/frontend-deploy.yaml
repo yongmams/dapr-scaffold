@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: dapr-app-admin
-          image: hub.sample.com/dapr-app-admin:0.0.2
+          image: hub.sample.com/dapr-app-admin:0.0.3
           resources:
             limits:
               memory: "256Mi"
