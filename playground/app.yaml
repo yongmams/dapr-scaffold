@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dapr-app-test
+  namespace: dapr-playground
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dapr-app-test
+  template:
+    metadata:
+      labels:
+        app: dapr-app-test
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "dapr-app-test"
+        dapr.io/app-port: "80"
+        dapr.io/config: "darp-app-config"
+    spec:
+      containers:
+        - name: dapr-app-test
+          image: mcr.microsoft.com/dotnet/sdk:6.0
+          workingDir: /app
+          command: ["dotnet"]  
+          args: ["DapApp.Admin.API.dll"]  
+          volumeMounts:
+            - name: files
+              mountPath: /app
+              subPath: App_Data/de643029-46f1-4652-b604-264c34b3e4e7
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+      volumes:
+        - name: files
+          persistentVolumeClaim:
+            claimName: dapr-admin-pvc

@@ -21,20 +21,23 @@ spec:
     spec:
       containers:
         - name: dapr-app-admin-api
-          image: hub.sample.com/dapr-app-admin-api:0.0.1
+          image: hub.sample.com/dapr-app-admin-api:0.0.2
           env:
           - name: ASPNETCORE_PATHBASE
             value: "/admin"
           volumeMounts:
-            - name: db
+            - name: files
               mountPath: /app/appsettings.secret.json
               subPath: admin-api/appsettings.secret.json
+            - name: files
+              mountPath: /app/App_Data
+              subPath: App_Data
           resources:
             limits:
               memory: "256Mi"
               cpu: "200m"
       volumes:
-        - name: db
+        - name: files
           persistentVolumeClaim:
             claimName: dapr-admin-pvc
 {{- end }}

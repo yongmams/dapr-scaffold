@@ -200,3 +200,6 @@ Config_SSP/
 #secret
 tempkey.jwk
 appsettings.secret.json
+
+#Data
+App_Data

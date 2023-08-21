@@ -1,9 +1,10 @@
 using DapApp.Admin.API.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
+using System.IO.Compression;
 
 namespace DapApp.Admin.API.Controllers
 {
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class WebAppController : ControllerBase
@@ -25,21 +26,33 @@ namespace DapApp.Admin.API.Controllers
                 return BadRequest("No file was uploaded");
             }
 
-            // var fileName = Path.GetFileName(file.FileName);
-            // var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", fileName);
+            var extName = Path.GetExtension(file.FileName);
+            if (string.Compare(extName, ".zip", true) != 0)
+            {
+                return BadRequest("File must be in zip format");
+            }
 
             var fileName = Guid.NewGuid().ToString();
-            var filePath = DateTime.Now.ToString("yyyyMM");
 
-            await _fileService.Upload(file, "dapr-admin", $"{filePath}_{fileName}");
+            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "temp"));
+            var tempFilePath = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "temp", fileName + extName);
+
+            using (var stream = new FileStream(tempFilePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "WebApp", fileName);
+            ZipFile.ExtractToDirectory(tempFilePath, filePath);
+
+            System.IO.File.Delete(tempFilePath);
+
+            //var fileName = Guid.NewGuid().ToString();
+            //var filePath = DateTime.Now.ToString("yyyyMM");
+
+            //await _fileService.Upload(file, "dapr-admin", $"{filePath}_{fileName}");
 
             return Ok($"File {fileName} has been uploaded successfully.");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Test(string name)
-        {
-            return await Task.FromResult(Ok());
         }
     }
 }
