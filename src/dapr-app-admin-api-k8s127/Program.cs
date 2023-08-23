@@ -1,14 +1,11 @@
-using DapApp.Admin.API;
-using DapApp.Admin.API.Services;
+using DarpApp.Admin.API.K8S127;
+using k8s;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Http;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Diagnostics;
 using System.Security.Claims;
-using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,21 +17,26 @@ var configuration = builder.Configuration;
 var isDevelopment = configuration.GetValue<string>("ASPNETCORE_ENVIRONMENT") == "Development";
 
 // Add services to the container.
-if (configuration != null
-    && !string.IsNullOrWhiteSpace(configuration.GetValue<string>("S3FileStorage:url"))
-    && !string.IsNullOrWhiteSpace(configuration.GetValue<string>("S3FileStorage:accessKey"))
-    && !string.IsNullOrWhiteSpace(configuration.GetValue<string>("S3FileStorage:secretKey")))
+builder.Services.AddScoped<IKubernetes>(sp =>
 {
-    builder.Services.AddScoped<IFileService>(sp =>
-    {
-        return new S3FileService(configuration.GetValue<string>("S3FileStorage:url"), configuration.GetValue<string>("S3FileStorage:accessKey"), configuration.GetValue<string>("S3FileStorage:secretKey"));
-    });
-}
+    KubernetesClientConfiguration config;
+    string configFilePath = configuration.GetValue<string>("Kubernetes:ConfigFilePath");
 
-builder.Services.AddTransient<AuthHeaderInterceptor>();
-builder.Services
-    .AddHttpClient("AuthHttpClient")
-    .AddHttpMessageHandler<AuthHeaderInterceptor>();
+    if (!string.IsNullOrWhiteSpace(configFilePath))
+    {
+        config = KubernetesClientConfiguration.BuildConfigFromConfigFile(configFilePath);
+    }
+    else if (KubernetesClientConfiguration.IsInCluster())
+    {
+        config = KubernetesClientConfiguration.InClusterConfig();
+    }
+    else
+    {
+        config = KubernetesClientConfiguration.BuildConfigFromConfigFile();
+    }
+
+    return new Kubernetes(config);
+});
 
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
@@ -42,7 +44,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
-        options.Authority = configuration.GetValue<string>("SSO:Authority"); ;
+        options.Authority = configuration.GetValue<string>("SSO:Authority");
         options.RequireHttpsMetadata = false;
 
         options.TokenValidationParameters = new TokenValidationParameters
@@ -61,7 +63,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             return Task.CompletedTask;
         };
     });
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>
@@ -90,7 +91,6 @@ if (!string.IsNullOrEmpty(pathBase))
 {
     app.UsePathBase(new PathString(pathBase));
 }
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

@@ -1,10 +1,11 @@
 using DapApp.Admin.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IO.Compression;
 
 namespace DapApp.Admin.API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class WebAppController : ControllerBase

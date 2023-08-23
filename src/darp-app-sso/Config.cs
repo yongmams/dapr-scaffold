@@ -30,7 +30,7 @@ namespace DaprApp.SSO
 
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     // scopes that client has access to
-                    AllowedScopes = { "api1" }
+                    AllowedScopes = { IdentityServerConstants.StandardScopes.OpenId, IdentityServerConstants.StandardScopes.Profile }
                 },
                 
                 // interactive ASP.NET Core MVC client
@@ -51,7 +51,27 @@ namespace DaprApp.SSO
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        "api1"
+                    }
+                },
+                
+                // interactive ASP.NET Core MVC client
+                new Client
+                {
+                    ClientId = "swagger",
+                    ClientSecrets = { new Secret("secret".Sha256()) },
+
+                    AllowedGrantTypes = GrantTypes.Code,
+                    
+                    // where to redirect to after login
+                    RedirectUris = { "http://localhost:32769/swagger/oauth2-redirect.html" },
+
+                    // where to redirect to after logout
+                    PostLogoutRedirectUris = { "http://127.0.0.1:5173/signout-callback-oidc","http://127.0.0.1/signout-callback-oidc","http://localhost/signout-callback-oidc" },
+
+                    AllowedScopes = new List<string>
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
                     }
                 }
             };

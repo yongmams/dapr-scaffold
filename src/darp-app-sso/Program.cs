@@ -1,5 +1,6 @@
 using DaprApp.SSO;
 using IdentityServer4.Extensions;
+using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddTransient<IRedirectUriValidator, CustomRedirectUriValidator>();
 var id4buiild = builder.Services
     .AddIdentityServer(options =>
     {
