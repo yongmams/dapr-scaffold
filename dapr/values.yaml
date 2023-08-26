@@ -10,6 +10,11 @@ elasticsearch:
     storageSize: 8Gi
     storageClass: ""
 
+grafana:
+  persistentVolume:
+    storageSize: 1Gi
+    storageClass: ""
+
 redisinsight:
   persistentVolume:
     storageSize: 8Gi

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dapr-grafana-pvc
+spec:
+  storageClassName: {{ include "dapr.storage.class" (dict "persistentVolume" .Values.grafana.persistentVolume "global" .Values.global) }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.grafana.storageSize | default "1Gi" }}
