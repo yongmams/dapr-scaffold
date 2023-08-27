@@ -67,7 +67,13 @@ const asyncRoutesList: CustomRoute[] = [
                 path: '/settings/zipkin',
                 hidden: true,
                 component: React.lazy(() => import('@/views/zipkin'))
-            } ,
+            },
+            {
+                title: 'grafana',
+                path: '/settings/grafana',
+                hidden: true,
+                component: React.lazy(() => import('@/views/grafana'))
+            },
             {
                 title: 'ES',
                 path: '/settings/kibana',

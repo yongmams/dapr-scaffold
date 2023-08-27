@@ -200,6 +200,7 @@ Config_SSP/
 #secret
 tempkey.jwk
 appsettings.secret.json
+k8s.config.yaml
 
 #Data
 App_Data

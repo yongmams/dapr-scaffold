@@ -61,6 +61,11 @@ const BaseLayout: React.FC = () => {
                                 label: 'Zipkin',
                             },
                             {
+                                key: '/settings/grafana',
+                                icon: <UserOutlined />,
+                                label: 'Grafana',
+                            },
+                            {
                                 key: '/settings/kibana',
                                 icon: <VideoCameraOutlined />,
                                 label: 'Kibana',

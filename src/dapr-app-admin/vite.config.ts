@@ -42,6 +42,11 @@ export default defineConfig({
         secure: false,
         changeOrigin: false
       },
+      '/grafana': {
+        target: 'http://localhost/',
+        secure: false,
+        changeOrigin: false
+      },
       '/kb': {
         target: 'http://localhost/',
         secure: false,

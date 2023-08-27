@@ -14,18 +14,23 @@ namespace DapApp.Admin.API.Controllers
     {
         private readonly IHttpClientFactory _httpClientFactory = null!;
         private readonly ILogger<ServerFarmController> _logger = null!;
+        private readonly IConfiguration _configuration = null!;
 
-        public ServerFarmController(IHttpClientFactory httpClientFactory, ILogger<ServerFarmController> logger)
+        public ServerFarmController(
+            IHttpClientFactory httpClientFactory,
+            ILogger<ServerFarmController> logger,
+            IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;
+            _configuration = configuration;
         }
 
         [HttpGet]
         public async Task<PagingQuery<ServerFarm>> List()
         {
             using HttpClient client = _httpClientFactory.CreateClient("AuthHttpClient");
-            client.BaseAddress = new Uri("http://host.docker.internal:32769/");
+            client.BaseAddress = new Uri(_configuration.GetValue<string>("Services:K8sServiceBase"));
 
             var request = new HttpRequestMessage();
             request.Method = HttpMethod.Get;

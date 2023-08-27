@@ -2,36 +2,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dapr-app-admin-api
+  name: dapr-app-admin-k8s
   namespace: {{ .Release.Namespace | quote }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dapr-app-admin-api
+      app: dapr-app-admin-k8s
   template:
     metadata:
       labels:
-        app: dapr-app-admin-api
+        app: dapr-app-admin-k8s
       annotations:
         dapr.io/enabled: "true"
-        dapr.io/app-id: "dapr-app-admin-api"
+        dapr.io/app-id: "dapr-app-admin-k8s"
         dapr.io/app-port: "80"
         dapr.io/config: "darp-app-config"
     spec:
+      serviceAccountName: dapr-admin-service-account
       containers:
-        - name: dapr-app-admin-api
-          image: hub.sample.com/dapr-app-admin-api:0.0.3
+        - name: dapr-app-admin-k8s
+          image: hub.sample.com/dapr-app-admin-api-k8s:0.0.1
           env:
           - name: ASPNETCORE_PATHBASE
             value: "/admin"
           volumeMounts:
             - name: files
               mountPath: /app/appsettings.secret.json
-              subPath: admin-api/appsettings.secret.json
-            - name: files
-              mountPath: /app/App_Data
-              subPath: App_Data
+              subPath: admin-k8s/appsettings.secret.json
           resources:
             limits:
               memory: "256Mi"
