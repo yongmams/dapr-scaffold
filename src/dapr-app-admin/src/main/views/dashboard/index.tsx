@@ -9,6 +9,7 @@ const Dashboard: React.FC = () => {
 };
 
 const mapStateToProps = (state: any) => {
+
     return {
         ...state.app,
         ...state.settings

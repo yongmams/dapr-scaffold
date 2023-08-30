@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom/client'
 import { AuthProvider, AuthProviderProps } from 'oidc-react';
 import App from './App.tsx'
 
-import './index.css'
-
 const oidcConfig: AuthProviderProps = {
   autoSignIn: true,
   onBeforeSignIn: () => {

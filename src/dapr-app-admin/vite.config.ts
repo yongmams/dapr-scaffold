@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import { viteMockServe } from 'vite-plugin-mock'
 import react from '@vitejs/plugin-react-swc'
 import path from 'path'
 
@@ -24,7 +25,15 @@ export default defineConfig({
       }
     }
   },
-  plugins: [react()],
+  plugins: [
+    react(),
+    viteMockServe({
+      mockPath: 'mock',
+      enable: true,
+      supportTs: true,
+      watchFiles: true,
+    })
+  ],
   server: {
     proxy: {
       '/admin/api': {
@@ -65,3 +74,4 @@ export default defineConfig({
     }
   }
 })
+
